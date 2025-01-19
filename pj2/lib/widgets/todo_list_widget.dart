@@ -23,7 +23,7 @@ class TodoListWidget extends StatelessWidget {
       itemCount: todoList.length,
       itemBuilder: (context, index) {
         return ListTile(
-          title: Text(todoList[index].title),
+          title: Text(todoList[index].task),
         );
       },
     );

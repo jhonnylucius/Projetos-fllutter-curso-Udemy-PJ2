@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:pj2/model/todo.dart';
-import 'package:pj2/widgets/todo_list_widget.dart';
 
 class TodoItemWidget extends StatefulWidget {
   const TodoItemWidget({super.key, required this.todo});
@@ -16,14 +16,41 @@ class _TodoItemWidgetState extends State<TodoItemWidget> {
 
   @override
   void initState() {
-    todoController = TextEditingController(text: widget.todo.title);
+    todoController = TextEditingController(text: widget.todo.task);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: TodoListWidget(todo: todoList[index].task),
+      title: TextFormField(
+        controller: todoController,
+        decoration: InputDecoration.collapsed(
+          hintText: 'Escreva sua tarefda',
+        ),
+        onChanged: onToggled,
+      ),
+      leading: Checkbox(
+        value: widget.todo.completed,
+        onChanged: onToggled,
+      ),
+      trailing: IconButton(
+        onPressed: onDeleted,
+        visualDensity: VisualDensity.compact,
+        icon: Icon(Icons.close_rounded),
+      ),
     );
+  }
+
+  void onChanged(String task) {
+    Logger().e(task);
+  }
+
+  void onToggled(_) {
+    Logger().e(_);
+  }
+
+  void onDeleted() {
+    Logger().e('deleted');
   }
 }
