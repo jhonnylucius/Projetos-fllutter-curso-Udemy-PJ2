@@ -28,16 +28,16 @@ class _TodoItemWidgetState extends State<TodoItemWidget> {
         decoration: InputDecoration.collapsed(
           hintText: 'Escreva sua tarefda',
         ),
-        onChanged: onToggled,
+        onChanged: onChanged,
       ),
-      leading: Checkbox(
+      leading: Checkbox.adaptive(
         value: widget.todo.completed,
         onChanged: onToggled,
       ),
       trailing: IconButton(
         onPressed: onDeleted,
         visualDensity: VisualDensity.compact,
-        icon: Icon(Icons.close_rounded),
+        icon: Icon(Icons.delete_forever_sharp),
       ),
     );
   }
