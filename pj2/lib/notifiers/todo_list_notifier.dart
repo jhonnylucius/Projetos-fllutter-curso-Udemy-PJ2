@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pj2/model/todo.dart';
+import 'package:pj2/model/todo_filter.dart';
 
 class TodoListNotifier extends ValueNotifier<List<Todo>> {
   TodoListNotifier() : super(_initialValue);
@@ -14,26 +15,51 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
     Todo.create('Task 7'),
     Todo.create('Task 8'),
   ];
+  final _allTodoNotifier = ValueNotifier<List<Todo>>(_initialValue);
+  TodoFilter _currenteFilter = TodoFilter.all;
+
+  List<Todo> get _todos => _allTodoNotifier.value;
+
+  void init() {
+    _allTodoNotifier.addListener(() => updateTodoList());
+  }
 
   void add(Todo todo) {
-    value = [...value, todo];
+    _allTodoNotifier.value = [...value, todo];
   }
 
   void update(String id, String task) {
-    value = [
+    _allTodoNotifier.value = [
       for (final todo in value)
         if (todo.id != id) todo else todo.copyWith(task: task)
     ];
   }
 
   void toggle(String id) {
-    value = [
+    _allTodoNotifier.value = [
       for (final todo in value)
         if (todo.id != id) todo else todo.copyWith(completed: !todo.completed)
     ];
   }
 
   void remove(String id) {
-    value = value.where((todo) => todo.id != id).toList();
+    _allTodoNotifier.value = value.where((todo) => todo.id != id).toList();
   }
+
+  void changeFilter(TodoFilter filter) {
+    _currenteFilter = filter;
+    updateTodoList();
+  }
+
+  void updateTodoList() {
+    value = _mapFilterToTodoList();
+  }
+
+  List<Todo> _mapFilterToTodoList() => switch (_currenteFilter) {
+        TodoFilter.incomplete =>
+          _todos.where((todo) => todo.completed).toList(),
+        TodoFilter.completed =>
+          _todos.where((todo) => !todo.completed).toList(),
+        _ => _todos
+      };
 }

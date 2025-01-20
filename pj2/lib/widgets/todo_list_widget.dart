@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pj2/controller/todo_list_controller.dart';
+import 'package:pj2/model/todo_filter.dart';
 import 'package:pj2/service/service_locator.dart';
 import 'package:pj2/widgets/todo_item_widget.dart';
 
@@ -13,6 +14,17 @@ class TodoListWidget extends StatelessWidget {
     return ValueListenableBuilder(
       valueListenable: controller.todoListNotifier,
       builder: (context, todoList, child) {
+        var isFilterAll = controller.filterNotifier.value == TodoFilter.all;
+
+        if (todoList.isEmpty && !isFilterAll) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text('Vazio'),
+            ),
+          );
+        }
+
         return ListView.builder(
           primary: false,
           shrinkWrap: true,
