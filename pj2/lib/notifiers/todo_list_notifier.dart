@@ -14,4 +14,22 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
     Todo.create('Task 7'),
     Todo.create('Task 8'),
   ];
+
+  void update(String id, String task) {
+    value = [
+      for (final todo in value)
+        if (todo.id != id) todo else todo.copyWith(task: task)
+    ];
+  }
+
+  void toggle(String id) {
+    value = [
+      for (final todo in value)
+        if (todo.id != id) todo else todo.copyWith(completed: !todo.completed)
+    ];
+  }
+
+  void remove(String id) {
+    value = value.where((todo) => todo.id != id).toList();
+  }
 }

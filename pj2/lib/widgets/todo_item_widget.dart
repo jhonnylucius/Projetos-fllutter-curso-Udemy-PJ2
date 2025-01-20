@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:pj2/controller/todo_list_controller.dart';
 import 'package:pj2/model/todo.dart';
 import 'package:pj2/service/service_locator.dart';
@@ -46,14 +45,18 @@ class _TodoItemWidgetState extends State<TodoItemWidget> {
   }
 
   void onChanged(String task) {
-    Logger().e(task);
+    controller.update(
+      widget.todo.id,
+      task,
+      widget.todo.completed,
+    );
   }
 
   void onToggled(_) {
-    Logger().e(_);
+    controller.toggle(widget.todo.id);
   }
 
   void onDeleted() {
-    Logger().e('deleted');
+    controller.remove(widget.todo.id);
   }
 }
