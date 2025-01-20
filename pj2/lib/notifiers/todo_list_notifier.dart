@@ -6,6 +6,7 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
 
   static final List<Todo> _initialValue = [
     Todo.create('Task 1'),
+    Todo.create('Task 2'),
     Todo.create('Task 3'),
     Todo.create('Task 4'),
     Todo.create('Task 5'),
