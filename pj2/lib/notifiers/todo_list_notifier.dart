@@ -15,6 +15,10 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
     Todo.create('Task 8'),
   ];
 
+  void add(Todo todo) {
+    value = [...value, todo];
+  }
+
   void update(String id, String task) {
     value = [
       for (final todo in value)

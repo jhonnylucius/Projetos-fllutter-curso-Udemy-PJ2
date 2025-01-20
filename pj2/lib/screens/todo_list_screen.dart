@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pj2/widgets/new_todo_widget.dart';
 import 'package:pj2/widgets/todo_list_widget.dart';
 
 class TodoListScreen extends StatefulWidget {
@@ -16,7 +17,10 @@ class _TodoListScreen extends State<TodoListScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('To Do App'),
       ),
-      body: TodoListWidget(),
+      body: ListView(children: [
+        const NewTodoWidget(),
+        TodoListWidget(),
+      ]),
     );
   }
 }
