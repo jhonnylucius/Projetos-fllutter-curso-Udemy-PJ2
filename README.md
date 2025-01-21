@@ -5,7 +5,7 @@
   
   # Todo App - Flutter & Dart
 
-  ![🎥Demonstração do Tradutor de Artigos](assets/demonstracao.gif)
+  ![🎥Demonstração do Tradutor de Artigos](pj2/assets/demonstracao.gif)
   
   ### Aplicativo de Lista de Tarefas desenvolvido durante o curso da Udemy
 </div>
