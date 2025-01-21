@@ -16,7 +16,7 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
     Todo.create('Task 8'),
   ];
   final _allTodoNotifier = ValueNotifier<List<Todo>>(_initialValue);
-  TodoFilter _currenteFilter = TodoFilter.all;
+  TodoFilter _currentFilter = TodoFilter.all;
 
   List<Todo> get _todos => _allTodoNotifier.value;
 
@@ -25,29 +25,40 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
   }
 
   void add(Todo todo) {
-    _allTodoNotifier.value = [...value, todo];
+    _allTodoNotifier.value = [
+      ..._todos,
+      todo
+    ]; // Corrigido de value para _todos
   }
 
-  void update(String id, String task) {
+  void update(String id, String task, bool completed) {
     _allTodoNotifier.value = [
-      for (final todo in value)
-        if (todo.id != id) todo else todo.copyWith(task: task)
+      for (final todo in _todos)
+        if (todo.id != id)
+          todo
+        else
+          todo.copyWith(task: task, completed: completed)
     ];
   }
 
   void toggle(String id) {
     _allTodoNotifier.value = [
-      for (final todo in value)
+      for (final todo in _todos)
         if (todo.id != id) todo else todo.copyWith(completed: !todo.completed)
     ];
+    updateTodoList();
   }
 
   void remove(String id) {
-    _allTodoNotifier.value = value.where((todo) => todo.id != id).toList();
+    _allTodoNotifier.value = _todos.where((todo) => todo.id != id).toList();
+  }
+
+  void reorder(List<Todo> todos) {
+    _allTodoNotifier.value = todos;
   }
 
   void changeFilter(TodoFilter filter) {
-    _currenteFilter = filter;
+    _currentFilter = filter;
     updateTodoList();
   }
 
@@ -55,11 +66,10 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
     value = _mapFilterToTodoList();
   }
 
-  List<Todo> _mapFilterToTodoList() => switch (_currenteFilter) {
+  List<Todo> _mapFilterToTodoList() => switch (_currentFilter) {
         TodoFilter.incomplete =>
-          _todos.where((todo) => todo.completed).toList(),
-        TodoFilter.completed =>
           _todos.where((todo) => !todo.completed).toList(),
+        TodoFilter.completed => _todos.where((todo) => todo.completed).toList(),
         _ => _todos
       };
 }

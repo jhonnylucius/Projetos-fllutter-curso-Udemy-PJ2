@@ -12,10 +12,22 @@ class Todo {
     return Todo(id: uuid, task: task, completed: false);
   }
 
+  factory Todo.fromJson(Map<String, dynamic> json) => Todo(
+        id: json['id'],
+        task: json['task'],
+        completed: json['completed'],
+      );
+
   Todo copyWith({String? task, bool? completed}) {
     return Todo(
         id: id,
         task: task ?? this.task,
         completed: completed ?? this.completed);
   }
+
+  Map<String, dynamic> json() => {
+        'id': id,
+        'task': task,
+        'completed': completed,
+      };
 }
