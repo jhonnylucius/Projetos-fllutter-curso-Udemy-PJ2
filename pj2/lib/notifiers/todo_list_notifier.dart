@@ -15,19 +15,11 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
 
   Future<void> init() async {
     _allTodoNotifier.value = await _storageService.getTodos();
-    //updateTodoList();
     updateTodoList();
     _allTodoNotifier.addListener(() {
       updateTodoList();
       _saveTodosListBd();
     });
-  }
-
-  void add(Todo todo) {
-    _allTodoNotifier.value = [
-      ..._todos,
-      todo
-    ]; // Corrigido de value para _todos
   }
 
   void update(String id, String task, bool completed) {
@@ -38,6 +30,12 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
         else
           todo.copyWith(task: task, completed: completed)
     ];
+    _saveTodosListBd();
+  }
+
+  void add(Todo todo) {
+    _allTodoNotifier.value = [..._todos, todo];
+    _saveTodosListBd();
   }
 
   void toggle(String id) {
@@ -45,15 +43,17 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
       for (final todo in _todos)
         if (todo.id != id) todo else todo.copyWith(completed: !todo.completed)
     ];
-    updateTodoList();
+    _saveTodosListBd();
   }
 
   void remove(String id) {
     _allTodoNotifier.value = _todos.where((todo) => todo.id != id).toList();
+    _saveTodosListBd();
   }
 
   void reorder(List<Todo> todos) {
     _allTodoNotifier.value = todos;
+    _saveTodosListBd();
   }
 
   void changeFilter(TodoFilter filter) {
@@ -65,15 +65,18 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
     value = _mapFilterToTodoList();
   }
 
-  void _saveTodosListBd() {
-    _storageService
-        .saveTodos(_todos.where((todo) => todo.task.isNotEmpty).toList());
+  void _saveTodosListBd() async {
+    await _storageService.saveTodos(_todos);
   }
 
-  List<Todo> _mapFilterToTodoList() => switch (_currentFilter) {
-        TodoFilter.incomplete =>
-          _todos.where((todo) => !todo.completed).toList(),
-        TodoFilter.completed => _todos.where((todo) => todo.completed).toList(),
-        _ => _todos
-      };
+  List<Todo> _mapFilterToTodoList() {
+    switch (_currentFilter) {
+      case TodoFilter.incomplete:
+        return _todos.where((todo) => !todo.completed).toList();
+      case TodoFilter.completed:
+        return _todos.where((todo) => todo.completed).toList();
+      case TodoFilter.all:
+        return _todos;
+    }
+  }
 }
