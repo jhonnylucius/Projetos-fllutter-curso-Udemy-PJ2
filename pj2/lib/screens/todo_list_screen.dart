@@ -14,10 +14,22 @@ class TodoListScreen extends StatefulWidget {
 
 class _TodoListScreen extends State<TodoListScreen> {
   final controller = getIt<TodoListController>();
-  static const List<Tab> tabs = [
-    Tab(text: 'Todas'), // TodoFilter.all
-    Tab(text: 'A Fazer'), // TodoFilter.incomplete
-    Tab(text: 'Concluida'), // TodoFilter.completed
+  final List<ButtonSegment<TodoFilter>> segments = [
+    ButtonSegment(
+      value: TodoFilter.all,
+      label: Text('Todas'),
+      icon: Icon(Icons.list_alt),
+    ),
+    ButtonSegment(
+      value: TodoFilter.incomplete,
+      label: Text('A Fazer'),
+      icon: Icon(Icons.pending_actions),
+    ),
+    ButtonSegment(
+      value: TodoFilter.completed,
+      label: Text('Concluída'),
+      icon: Icon(Icons.task_alt),
+    ),
   ];
 
   @override
@@ -29,16 +41,23 @@ class _TodoListScreen extends State<TodoListScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: tabs.length,
+      length: segments.length,
       child: Scaffold(
         appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text('To Do App'),
-            bottom: TabBar(
-              tabs: tabs,
-              onTap: (index) {
-                controller.changeFilter(TodoFilter.values[index]);
-              },
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(48),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SegmentedButton<TodoFilter>(
+                  segments: segments,
+                  selected: {controller.filterNotifier.value},
+                  onSelectionChanged: (Set<TodoFilter> selected) {
+                    controller.changeFilter(selected.first);
+                  },
+                ),
+              ),
             )),
         body: ListView(
           children: [
