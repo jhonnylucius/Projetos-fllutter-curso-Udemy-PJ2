@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:pj2/screens/todo_list_screen.dart';
 import 'package:pj2/service/service_locator.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
   setupGetIt();
   runApp(const MyApp());
 }
