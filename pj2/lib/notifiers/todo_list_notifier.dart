@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:pj2/model/todo.dart';
 import 'package:pj2/model/todo_filter.dart';
+import 'package:pj2/service/service_locator.dart';
+import 'package:pj2/service/storage_services.dart';
 
 class TodoListNotifier extends ValueNotifier<List<Todo>> {
-  TodoListNotifier() : super(_initialValue);
+  TodoListNotifier() : super([]);
 
-  static final List<Todo> _initialValue = [
-    Todo.create('Task 1'),
-    Todo.create('Task 2'),
-    Todo.create('Task 3'),
-    Todo.create('Task 4'),
-    Todo.create('Task 5'),
-    Todo.create('Task 6'),
-    Todo.create('Task 7'),
-    Todo.create('Task 8'),
-  ];
-  final _allTodoNotifier = ValueNotifier<List<Todo>>(_initialValue);
+  final _allTodoNotifier = ValueNotifier<List<Todo>>([]);
   TodoFilter _currentFilter = TodoFilter.all;
+  final _storageService = getIt<StorageServices>();
 
   List<Todo> get _todos => _allTodoNotifier.value;
 
-  void init() {
-    _allTodoNotifier.addListener(() => updateTodoList());
+  Future<void> init() async {
+    _allTodoNotifier.value = await _storageService.getTodos();
+    //updateTodoList();
+    updateTodoList();
+    _allTodoNotifier.addListener(() {
+      updateTodoList();
+      _saveTodosListBd();
+    });
   }
 
   void add(Todo todo) {
@@ -64,6 +63,11 @@ class TodoListNotifier extends ValueNotifier<List<Todo>> {
 
   void updateTodoList() {
     value = _mapFilterToTodoList();
+  }
+
+  void _saveTodosListBd() {
+    _storageService
+        .saveTodos(_todos.where((todo) => todo.task.isNotEmpty).toList());
   }
 
   List<Todo> _mapFilterToTodoList() => switch (_currentFilter) {

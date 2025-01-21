@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pj2/controller/todo_list_controller.dart';
 import 'package:pj2/model/todo.dart';
@@ -15,6 +17,7 @@ class TodoItemWidget extends StatefulWidget {
 class _TodoItemWidgetState extends State<TodoItemWidget> {
   late TextEditingController todoController;
   final controller = getIt<TodoListController>();
+  Timer? debounce;
 
   @override
   void initState() {
@@ -45,11 +48,14 @@ class _TodoItemWidgetState extends State<TodoItemWidget> {
   }
 
   void onChanged(String task) {
-    controller.update(
-      widget.todo.id,
-      task,
-      widget.todo.completed,
-    );
+    debounce?.cancel();
+    debounce = Timer(Duration(milliseconds: 500), () {
+      controller.update(
+        widget.todo.id,
+        task,
+        widget.todo.completed,
+      );
+    });
   }
 
   void onToggled(_) {
