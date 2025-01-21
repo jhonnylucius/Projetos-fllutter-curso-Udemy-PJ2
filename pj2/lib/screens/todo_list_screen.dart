@@ -40,39 +40,41 @@ class _TodoListScreen extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: segments.length,
-      child: Scaffold(
-        appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: Text('To Do App'),
-            bottom: PreferredSize(
-              preferredSize: Size.fromHeight(48),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SegmentedButton<TodoFilter>(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('To Do App'),
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(48),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ValueListenableBuilder(
+              valueListenable: controller.filterNotifier,
+              builder: (context, filter, child) {
+                return SegmentedButton<TodoFilter>(
                   segments: segments,
-                  selected: {controller.filterNotifier.value},
+                  selected: {filter},
                   onSelectionChanged: (Set<TodoFilter> selected) {
                     controller.changeFilter(selected.first);
                   },
-                ),
-              ),
-            )),
-        body: ListView(
-          children: [
-            ValueListenableBuilder(
-              valueListenable: controller.filterNotifier,
-              builder: (context, filter, child) {
-                if (filter == TodoFilter.completed) {
-                  return const SizedBox.shrink();
-                }
-                return const NewTodoWidget();
+                );
               },
             ),
-            TodoListWidget(),
-          ],
+          ),
         ),
+      ),
+      body: ValueListenableBuilder(
+        valueListenable: controller.filterNotifier,
+        builder: (context, filter, child) {
+          return Column(
+            children: [
+              if (filter == TodoFilter.all) const NewTodoWidget(),
+              Expanded(
+                child: TodoListWidget(),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
