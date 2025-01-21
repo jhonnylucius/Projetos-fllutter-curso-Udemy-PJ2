@@ -15,8 +15,12 @@ class TodoListWidget extends StatelessWidget {
       valueListenable: controller.todoListNotifier,
       builder: (context, todoList, child) {
         var isFilterAll = controller.filterNotifier.value == TodoFilter.all;
+        var isFilterIncomplete =
+            controller.filterNotifier.value == TodoFilter.incomplete;
+        var isFilterCompleted =
+            controller.filterNotifier.value == TodoFilter.completed;
 
-        if (todoList.isEmpty && !isFilterAll) {
+        if (todoList.isEmpty && (isFilterIncomplete || isFilterCompleted)) {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(16.0),
