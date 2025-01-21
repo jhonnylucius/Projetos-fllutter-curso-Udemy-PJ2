@@ -25,11 +25,13 @@ class TodoListController {
     todoListNotifier.update(
       id,
       task,
+      completed,
     );
   }
 
   void toggle(String id) {
     todoListNotifier.toggle(id);
+    //filterNotifier.value = TodoFilter.completed;
   }
 
   void remove(String id) {
@@ -38,5 +40,16 @@ class TodoListController {
 
   void changeFilter(TodoFilter filter) {
     filterNotifier.value = filter;
+  }
+
+  void reorder(oldIndex, newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final todos = todoListNotifier.value;
+    final todo = todos.removeAt(oldIndex);
+    todos.insert(newIndex, todo);
+
+    todoListNotifier.reorder(todos);
   }
 }

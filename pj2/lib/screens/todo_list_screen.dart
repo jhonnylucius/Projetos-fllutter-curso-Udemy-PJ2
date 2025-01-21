@@ -15,9 +15,9 @@ class TodoListScreen extends StatefulWidget {
 class _TodoListScreen extends State<TodoListScreen> {
   final controller = getIt<TodoListController>();
   static const List<Tab> tabs = [
-    Tab(text: 'Todas'),
-    Tab(text: 'A Fazer'),
-    Tab(text: 'Concluida'),
+    Tab(text: 'Todas'), // TodoFilter.all
+    Tab(text: 'A Fazer'), // TodoFilter.incomplete
+    Tab(text: 'Concluida'), // TodoFilter.completed
   ];
 
   @override
@@ -45,7 +45,7 @@ class _TodoListScreen extends State<TodoListScreen> {
             ValueListenableBuilder(
               valueListenable: controller.filterNotifier,
               builder: (context, filter, child) {
-                if (filter != TodoFilter.completed) {
+                if (filter == TodoFilter.completed) {
                   return const SizedBox.shrink();
                 }
                 return const NewTodoWidget();
