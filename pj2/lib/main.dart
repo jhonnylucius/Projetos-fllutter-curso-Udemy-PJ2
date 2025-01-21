@@ -4,7 +4,9 @@ import 'package:pj2/screens/todo_list_screen.dart';
 import 'package:pj2/service/service_locator.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Adicionar esta linha
   await Hive.initFlutter();
+  await Hive.openBox<String>('todos'); // linha adicionada
   setupGetIt();
   runApp(const MyApp());
 }
