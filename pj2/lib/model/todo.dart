@@ -13,10 +13,16 @@ class Todo {
   }
 
   factory Todo.fromJson(Map<String, dynamic> json) => Todo(
-        id: json['id'],
-        task: json['task'],
-        completed: json['completed'],
+        id: json['id'] as String,
+        task: json['task'] as String,
+        completed: json['completed'] as bool,
       );
+
+  Map<String, dynamic> json() => {
+        'id': id,
+        'task': task,
+        'completed': completed,
+      };
 
   Todo copyWith({String? task, bool? completed}) {
     return Todo(
@@ -24,10 +30,4 @@ class Todo {
         task: task ?? this.task,
         completed: completed ?? this.completed);
   }
-
-  Map<String, dynamic> json() => {
-        'id': id,
-        'task': task,
-        'completed': completed,
-      };
 }
