@@ -6,6 +6,7 @@ import 'package:pj2/service/storage_services.dart';
 
 class HiveStorage extends StorageServices {
   static const todosBoxName = 'todos';
+
   @override
   Future<List<Todo>> getTodos() async {
     final todosBox = Hive.box<String>(todosBoxName);
@@ -16,11 +17,11 @@ class HiveStorage extends StorageServices {
 
   @override
   Future<void> saveTodos(List<Todo> todos) async {
-    final todosBox = await Hive.openBox<String>(todosBoxName);
+    final todosBox = Hive.box<String>(todosBoxName);
     await todosBox.clear();
 
     for (final todo in todos) {
-      await todosBox.add(jsonEncode(todo));
+      await todosBox.add(jsonEncode(todo.json()));
     }
   }
 }
